@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.2/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         failOnWarning="true"
+         failOnRisky="true"
+         cacheDirectory=".phpunit.cache">
+    <testsuites>
+        <!--
+            Unit      pure value objects, the filter compiler, the config, and the store driven
+                      through a recording fake — nothing here needs a database.
+            Integration  a REAL PostgreSQL with the vector extension, through the real Database
+                      plugin adapter. It SKIPS (and says why) unless PGVECTOR_TEST_PORT is set,
+                      so a machine without PostgreSQL still gets a green Unit run — and the
+                      skip count in the output is the honest measure of what was not run.
+        -->
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">Infrastructure</directory>
+        </include>
+    </source>
+</phpunit>

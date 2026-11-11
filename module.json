@@ -1,0 +1,36 @@
+{
+    "name": "pgvector",
+    "version": "0.1.0",
+    "kernel": "^1.20.0",
+    "solves": "vector.store",
+    "type": "module",
+
+    "requires": ["database.management"],
+
+    "exposes": [
+        "AlfacodeTeam\\PhpServicePlatform\\Kernel\\Ports\\VectorStorePort"
+    ],
+
+    "routes": [],
+    "emits": [],
+    "listens": [],
+    "files": [],
+
+    "documentation": "VectorStorePort over PostgreSQL's pgvector extension, through the existing DatabasePort. No new daemon: a project that already runs PostgreSQL adds one extension. Every collection is one table (hkm_vec_<name>) with a vector(N) column, a jsonb payload, an optional HNSW index and a GIN index on the payload.",
+
+    "//no-routes": "A vector search is a primitive for other modules, not an endpoint. An unauthenticated search route would be a query oracle over whatever was embedded — which is usually the private text the application holds — so the capability is a port and the application decides who may ask.",
+
+    "//kernel-floor": "^1.20.0: VectorStorePort and EmbeddingPort first appear in the release after 1.19.0. The floor is set to that release; it was not established by `git tag --contains` because the ports are not yet tagged.",
+
+    "//requires-database-management": "The store needs a DatabasePort bound to PostgreSQL with the `vector` extension created. database.management is declared so the module joins the dependency graph of any route that asks for vector.store; the binding is a PostgreSQL connection, checked at first use (through DriverAware when the adapter has it).",
+
+    "commands": [
+        "Plugins\\Pgvector\\Infrastructure\\Cli\\VectorStatusCommand"
+    ],
+
+    "config": [
+        { "key": "PGVECTOR_EF_SEARCH", "type": "int", "required": false, "default": 64 },
+        { "key": "PGVECTOR_ITERATIVE_SCAN", "type": "string", "required": false, "default": "relaxed_order" },
+        { "key": "PGVECTOR_MAX_SCAN_TUPLES", "type": "int", "required": false, "default": 20000 }
+    ]
+}
